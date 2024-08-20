@@ -1,0 +1,14 @@
+#spring:
+#  application:
+#    name: SSMail
+#  mail:
+#    host: smtp.gmail.com
+#    username: aman@gmail.com
+#    port: 587
+#    password: obcckhbqfdrymtww
+#    properties:
+#      mail:
+#        auth: true
+#        smtp:
+#          starttls:
+#            enable: true
