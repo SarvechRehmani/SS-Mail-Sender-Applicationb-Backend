@@ -33,13 +33,14 @@ public class SsMailApplication implements CommandLineRunner {
 //				"<h1 style='border:red 1px solid; color:red'>This Message come from spring boot project</h1>"
 //				+ "";
 //		File file = new File("D:\\Programs\\Email Sender Application\\SSMail\\src\\main\\resources\\static\\profile-pic.png");
+//		InputStream stream = new FileInputStream(file);
 //		try {
 //			mailService.sendMailWithHtmlAndFile(
 //					to,
 //					cc,
 //					"2nd mailHello This is Test Case of Mail Sending Application",
 //					html,
-//					file
+//					stream
 //			);
 //			logger.info("Message sent successfully.");
 //		} catch (Exception e) {

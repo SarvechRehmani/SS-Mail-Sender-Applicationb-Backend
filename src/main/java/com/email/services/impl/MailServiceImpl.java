@@ -14,9 +14,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
@@ -94,20 +92,27 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public void sendMailWithHtmlAndFile(String[] to, String []cc, String subject, String htmlContent,  File file) {
+    public void sendMailWithHtmlAndFile(String[] to, String []cc, String subject, String htmlContent,  InputStream stream, String fileName) {
         MimeMessage simpleMailMessage = javaMailSender.createMimeMessage();
         try{
+            System.out.println(stream);
             MimeMessageHelper helper = new MimeMessageHelper(simpleMailMessage,true,"UTF-8");;
             helper.setFrom(from);
             helper.setTo(to);
             helper.setCc(cc);
             helper.setSubject(subject);
             helper.setText(htmlContent, true);
+
+            File file = new File("src/main/resources/static/"+fileName);
+            Files.copy(stream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
             FileSystemResource resource = new FileSystemResource(file);
             helper.addAttachment(Objects.requireNonNull(resource.getFilename()),file);
+
             javaMailSender.send(simpleMailMessage);
             logger.info("Mail sent to {} with subject: {}", to, subject);
-        } catch (MessagingException e) {
+            file.deleteOnExit();
+        } catch (MessagingException | IOException e) {
             throw new RuntimeException(e);
         }
     }

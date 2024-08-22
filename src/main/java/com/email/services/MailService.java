@@ -13,5 +13,5 @@ public interface MailService {
     void sendMail(String []to, String []cc, String subject, String message);
     void sendMailWithHtml(String to, String []cc, String subject, String htmlContent) throws MessagingException;
     void sendMailWithHtml(String []to, String []cc, String subject, String htmlContent);
-    void sendMailWithHtmlAndFile(String []to, String []cc, String subject, String htmlContent, File file);
+    void sendMailWithHtmlAndFile(String []to, String []cc, String subject, String htmlContent, InputStream stream, String fileName);
 }

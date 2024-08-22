@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 @RestController
 @RequestMapping("/api/v1/email")
@@ -30,9 +32,14 @@ public class EmailController {
 
     @PostMapping("/send-with-file")
     public  ResponseEntity<EmailResponse> sendEmailWithHtmlAndFile(@RequestPart EmailRequest request, @RequestPart MultipartFile file) throws IOException {
-        mailService.sendMailWithHtmlAndFile(request.getTo(), request.getCc(), request.getSubject(), request.getHtmlContent(), file.getResource().getFile());
+        InputStream stream = file.getInputStream();
+
+        String fileName = file.getResource().getFilename();
+
+        mailService.sendMailWithHtmlAndFile(request.getTo(), request.getCc(), request.getSubject(), request.getHtmlContent(), stream, fileName);
         return ResponseEntity.ok(
                 EmailResponse.builder().message("Email send successfully..").status(HttpStatus.OK).success(true).build()
         );
     }
+
 }
