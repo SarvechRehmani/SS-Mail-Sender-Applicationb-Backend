@@ -22,57 +22,17 @@ import java.util.Objects;
 @Service
 public class MailServiceImpl implements MailService {
 
-    private JavaMailSender javaMailSender;
+    private final JavaMailSender javaMailSender;
 
     @Value("${project.from}")
     private String from;
 
-    private Logger logger = LoggerFactory.getLogger(MailServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(MailServiceImpl.class);
 
     public MailServiceImpl(JavaMailSender javaMailSender) {
         this.javaMailSender = javaMailSender;
     }
 
-    @Override
-    public void sendMail(String to, String []cc, String subject, String message) {
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(to);
-        mailMessage.setCc(cc);
-        mailMessage.setSubject(subject);
-        mailMessage.setText(message);
-        mailMessage.setFrom(from);
-        javaMailSender.send(mailMessage);
-        logger.info("Mail sent to {} with subject: {}", to, subject);
-    }
-
-    @Override
-    public void sendMail(String[] to, String []cc, String subject, String message) {
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(to);
-        mailMessage.setCc(cc);
-        mailMessage.setSubject(subject);
-        mailMessage.setText(message);
-        mailMessage.setFrom(from);
-        javaMailSender.send(mailMessage);
-        logger.info("Mail sent to {} with subject: {}", to, subject);
-    }
-
-    @Override
-    public void sendMailWithHtml(String to, String []cc, String subject, String htmlContent) {
-        MimeMessage simpleMailMessage = javaMailSender.createMimeMessage();
-        try {
-            MimeMessageHelper helper = new MimeMessageHelper(simpleMailMessage,true,"UTF-8");
-            helper.setTo(to);
-            helper.setCc(cc);
-            helper.setSubject(subject);
-            helper.setFrom(from);
-            helper.setText(htmlContent, true);
-            javaMailSender.send(simpleMailMessage);
-            logger.info("Mail sent to {} with subject: {}", to, subject);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @Override
     public void sendMailWithHtml(String[] to, String []cc, String subject, String htmlContent) {
@@ -80,7 +40,9 @@ public class MailServiceImpl implements MailService {
         try {
             MimeMessageHelper helper = new MimeMessageHelper(simpleMailMessage,true,"UTF-8");
             helper.setTo(to);
-            helper.setCc(cc);
+            if(cc.length>0 && !Objects.equals(cc[0], "")){
+                helper.setCc(cc);
+            }
             helper.setSubject(subject);
             helper.setFrom(from);
             helper.setText(htmlContent, true);
@@ -99,7 +61,9 @@ public class MailServiceImpl implements MailService {
             MimeMessageHelper helper = new MimeMessageHelper(simpleMailMessage,true,"UTF-8");;
             helper.setFrom(from);
             helper.setTo(to);
-            helper.setCc(cc);
+            if(cc.length>0 && !Objects.equals(cc[0], "")){
+                helper.setCc(cc);
+            }
             helper.setSubject(subject);
             helper.setText(htmlContent, true);
 
